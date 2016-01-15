@@ -1,9 +1,10 @@
 How to C in 2016
 ================
 
--- <cite>[Matt Stancliff]</cite>
--- Corrections: <cite>[Keith S. Thompson]</cite>
--- Merged: <cite>[Bryan Elliott]</cite>
+
+* Original document: [How to C in 2016] -- <cite>[Matt Stancliff]</cite>
+* Corrections from: <cite>[Keith S. Thompson]</cite>
+* Merged by: <cite>[Bryan Elliott]</cite>
 
 _This is a draft Matt wrote in early 2015 and never got around to publishing. He
 published the mostly unpolished version because it wasn't doing anybody any good
@@ -1030,6 +1031,7 @@ Makrydakis] reminding us about C11 generic abilities).
 Perhaps another article about "Practical C" will show up to cover testing,
 profiling, performance tracing, optional-but-useful warning levels, etc.
 
+  [How to C in 2016]: https://matt.sh/howto-c
   [Matt Stancliff]: http://matt.sh
   [Keith S. Thompson]: https://github.com/Keith-S-Thompson
   [Bryan Elliott]: https://github.com/Fordi
