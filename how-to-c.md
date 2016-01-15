@@ -293,7 +293,7 @@ Other uses include: `size_t` is the type of the argument to malloc, and
 
 #### Printing Types
 
-You should never cast types during printing. You should use proper
+You should avoid casting types during printing, opting instead to use proper
 type specifiers.
 
 These include, but are not limited to:
