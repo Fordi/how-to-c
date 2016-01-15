@@ -577,10 +577,38 @@ alignment issues, see [Unaligned Memory Access].
 C99 gives us the power of `<stdbool.h>` which defines `true` to `1` and `false`
 to `0`.
 
-For success/failure return values, functions should return `true` or `false`,
-not an `int32_t` return type with manually specifying `1` and `0` (or worse,
-`1` and `-1` (or is it `0` success and `1` failure? or is it `0` success and
-`-1` failure?)).
+A widespread convention within POSIX systems is for return value >=0 for
+success, and <0 for one of a number of failure codes.  `0` is often used for
+success, since typically there's only one way for a function to succeed, but
+multiple paths to failure.  It's important to follow this convention when
+adding new functions to such an interface.
+
+If you do this, and you don't need to report a positive for success, you may
+want to define an enum that gives some description of the return value, for the
+sake of readability, both up and downstream:
+
+    enum My_Status_Code {
+        error_io = -2,
+        error_sz = -1,
+        ok = 0
+    };
+
+    /* ... */
+
+    switch (response) {
+    case My_Status_Code.error_io:
+        // report IO error
+        break;
+    case My_Status_Code.error_sz:
+        // report size error
+        break;
+    case My_Status_Code.ok:
+        // it worked.
+        break;
+    }
+
+If your function should either succeed or fail and there's no detail necessary
+in how it does so, you should return `true` or `false`.
 
 If a function mutates an input parameter to the extent the parameter is
 invalidated, instead of returning the altered pointer, your entire API should
@@ -712,11 +740,28 @@ Now, there's a new cleanup-tidy script there. The contents of `cleanup-tidy` is:
 [clang-tidy] is policy driven code refactoring tool. The options above enable
 two fixups:
 
-* `readability-braces-around-statements` — force all `if`/`while`/`for` statement bodies to be enclosed in braces
-    * It's an accident of history for C to have "brace optional" single statements after loop constructs and conditionals. It is *inexcusable* to write modern code without braces enforced on every loop and every conditional. Trying to argue "but, the compiler accepts it!" has *nothing* to do with the readability, maintainability, understandability, or skimability of code. You aren't programming to please your compiler, you are programming to please future people who have to maintain your current brain state years after everybody has forgotten why anything exists in the first place.
-* `misc-macro-parentheses` — automatically add parens around all parameters used in macro bodies
+* `readability-braces-around-statements` — force all `if`/`while`/`for`
+    statement bodies to be enclosed in braces
+    * It's an accident of history for C to have "brace optional" single
+        statements after loop constructs and conditionals. It is *inexcusable*
+        to write modern code without braces enforced on every loop and every
+        conditional. Trying to argue "but, the compiler accepts it!" has
+        *nothing* to do with the readability, maintainability,
+        understandability, or skimability of code. You aren't programming to
+        please your compiler, you are programming to please future people who
+        have to maintain your current brain state years after everybody has
+        forgotten why anything exists in the first place.
+* `misc-macro-parentheses` — automatically add parens around all parameters
+    used in macro bodies
 
-`clang-tidy` is great when it works, but for some complex code bases it can get stuck. Also, `clang-tidy` doesn't *format*, so you need to run `clang-format` after you tidy to align new braces and reflow macros.
+`clang-tidy` is great when it works, but for some complex code bases it can get
+stuck. Also, `clang-tidy` doesn't *format*, so you need to run `clang-format`
+after you tidy to align new braces and reflow macros.
+
+Remmeber, however, that there is an important, overriding rule to code formatting
+in any situation:
+
+* **Follow the conventions of the project you're working on.**
 
 ### Readability
 
