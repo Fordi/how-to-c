@@ -440,11 +440,12 @@ Do THIS instead:
 
         struct thing localThing = {0};
 
-**IMPORTANT NOTE**: If your struct has padding, the `{0}` method does not zero
-out extra padding bytes. For example, `struct thing` has 4 bytes of padding
-after `counter` (on a 64-bit platform) because structs are padded to word-sized
-increments. If you need to zero out an entire struct *including* unused
-padding, use `memset(&localThing, 0, sizeof(localThing))` because
+**NOTE**: While there's normally no reason to care about padding bytes, in the
+event you do, it's important to know that the `{0}` method does not zero them
+out. For example, on a 64-bit platform, `struct thing` will have 4 bytes of
+padding after `counter` (on a 64-bit platform) because structs are padded to
+word-sized increments. If you need to zero out an entire struct *including*
+unused padding, use `memset(&localThing, 0, sizeof(localThing))` because
 `sizeof(localThing) == 16 bytes` even though the addressable contents is only
 `8 + 4 = 12 bytes`.
 
