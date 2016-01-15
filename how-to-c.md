@@ -262,8 +262,8 @@ offset within an object.
 In practical use, `size_t` is the return type of `sizeof` operator.
 
 In either case: `size_t` is *practically* defined to be the same as `uintptr_t`
-on all modern platforms, so on a 32-bit platform `size_t` is `uint32_t` and on
-a 64-bit platform `size_t` is `uint64_t`.
+on all modern platforms, so on a 32-bit platform `size_t` is normally
+`uint32_t` and on a 64-bit platform `size_t` is normally `uint64_t`.
 
 There is also `ssize_t` which is a signed `size_t` used as the return value
 from library functions that return `-1` on error. (Note: `ssize_t` is POSIX and
