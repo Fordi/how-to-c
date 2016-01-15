@@ -375,9 +375,20 @@ Do THIS instead:
 One exception: if you need to retain your counter value after the loop exits,
 obviously don't declare your counter scoped to the loop itself.
 
-### Modern compilers support `#pragma once`
+### Most modern compilers support `#pragma once`
 
-So, do NOT do this:
+`#pragma once` tells the compiler to only include your header once and you _do
+not_ need three lines of header guards anymore. This pragma is widely supported
+across most compilers across all platforms.  One notable exception is Oracle's
+Solaris Studio C/C++.
+
+Symlinks and hardlinks can cause the same file to be found under different
+names, which can confuse `#pragma once`.  Moreover, include guarding may
+incorrectly treat two _different_ files as the same file, if the compiler is
+using heuristics to compare linked files (such as size or modification time).
+In cases like this, you'll want to define your own symbols using ifndef/define.
+
+Otherwise, instead of this:
 
     #ifndef PROJECT_HEADERNAME
     #define PROJECT_HEADERNAME
@@ -386,13 +397,11 @@ So, do NOT do this:
     .
     #endif /* PROJECT_HEADERNAME */
 
-Do THIS instead:
+You have the option of doing this instead:
 
     #pragma once
 
-`#pragma once` tells the compiler to only include your header once and you _do
-not_ need three lines of header guards anymore. This pragma is widely supported
-across all compilers across all platforms.
+Which is, in our opinion, much cleaner code.
 
 For more details, see list of supported compilers at [pragma once].
 
