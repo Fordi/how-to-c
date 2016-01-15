@@ -1,6 +1,7 @@
 How to C in 2016
 ================
 
+Reuse: [Creative Commons Attribution 4.0](https://creativecommons.org/licenses/by/4.0/)
 
 * Original document: [How to C in 2016] -- <cite>[Matt Stancliff]</cite>
 * Corrections from: <cite>[Keith S. Thompson]</cite>
