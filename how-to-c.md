@@ -779,23 +779,25 @@ etc), adjust as necessary.
 
 ### misc thoughts
 
-#### Never use `malloc`
+#### Allocation
 
-You should always use `calloc`. There is no performance penalty for getting
-zero'd memory. If you don't like the function protype of `calloc(object count,
-size per object)` you can wrap it with `#define mycalloc(N) calloc(1, N)`.
+You should usually use `calloc`. For most allocations, there is no performance
+penalty for getting zero'd memory.
 
-Readers have commented on a few things here:
+That said, `calloc` *does* have a performance impact for **huge** allocations,
+and on some embedded targets, legacy hardware, etc - but in no case is it slower
+than a `malloc/memset` call.
 
-* `calloc` *does* have a performance impact for **huge** allocations
-* `calloc` *does* have a performance impact on weird platforms (minimal embedded systems, game consoles, 30 year old hardware, ...)
-* wrapping `calloc(element count, size of each element)` is not always a good idea.
-* a good reason to avoid `malloc()` is it can't check for integer overflow and is a potential security risk
-* `calloc` allocations remove valgrind's ability to warn you about unintentional reads or copies of uninitialized memory since allocations get initialized to `0` automatically
+Additionally, zeroing memory often means that buggy code (yes, your code is
+buggy.  So's mine.) will have consistent behavior; but, by definition, it will
+not have correct behavior. Consistently incorrect behavior can be more
+difficult to track down.  If you're trying to program defensively, you might
+consider initializing allocated memory to some value that's known to be
+_in_valid rather than one that might be valid.
 
-Those are good points, and that's why we always must do performance testing and
-regression testing for speed across compilers, platforms, operating systems,
-and hardware devices.
+If you don't like the function protype of `calloc(object count, size per
+object)` you can wrap it with `#define mycalloc(N) calloc(1, N)` - though, this
+may not always be the best thing to do.
 
 One advantage of using `calloc()` directly without a wrapper is, unlike
 `malloc()`, `calloc()` can check for integer overflow because it multiplies its
@@ -804,8 +806,13 @@ allocating tiny things, wrapping `calloc()` is fine. If you are allocating
 potentially unbounded streams of data, you may want to retain the regular
 `calloc(element count, size of each element)` calling convention.
 
+However, `calloc` allocations remove valgrind's ability to warn you about
+unintentional reads or copies of uninitialized memory since allocations get
+initialized to `0` automatically
+
 No advice can be universal, but trying to give *exactly perfect* generic
-recommendations would end up reading like a book of language specifications.
+recommendations (especially with regards to memory allocation) would end up
+reading like a book of language specifications.
 
 For references on how `calloc()` gives you clean memory for free, see these
 nice writeups:
@@ -813,28 +820,41 @@ nice writeups:
 * [Benchmarking fun with calloc() and zero pages (2007)]
 * [Copy-on-write in virtual memory management]
 
-I still stand by my recommendation of always using `calloc()` for most common
-scenarios of 2016 (assumption: x64 target platforms, human-sized data, not
-including human genome-sized data). Any deviations from "expected" drag us into
-the pit of despair of "domain knowledge," which are words we shan't speak this
-day.
+All that said, we maintain that the best practice is to always use `calloc()`
+for most common scenarios of 2016.
 
-Subnote: The pre-zero'd memory delivered to you by `calloc()` is a one-shot
+Side Note: The pre-zero'd memory delivered to you by `calloc()` is a one-shot
 deal. If you `realloc()` your `calloc()` allocation, the grown memory extended
 by realloc is *not* new zero'd out memory. Your grown allocation is filled with
 whatever regular uninitialized contents your kernel provides. If you need
 zero'd memory after a realloc, you must manually `memset()` the extent of your
 grown allocation.
 
-#### Never memset (if you can avoid it)
+#### Avoid memset
 
 Never `memset(ptr, 0, len)` when you can statically initialize a structure (or
 array) to zero (or reset it back to zero by assigning from an in-line compound
-literal or by assigning from a global zero'd out structure).
+literal or by assigning from a global zero'd out structure; see above).
 
 Though, `memset()` is your only choice if you need to zero out a struct
 including its padding bytes (because `{0}` only sets defined fields, not
 undefined offsets filled by padding).
+
+#### Comments
+
+Comments are useful for documenting the functionality of your code, however,
+they have an important other function.
+
+This document describes what we consider to be best practices for C code,
+however, there are _always_ exceptions.  When you need to deviate from
+standards, it's important - for other developers, and for the "you" of next
+week/month/year - to put a comment in your code explaining why this was
+required.
+
+Generally speaking, comments should not be used to hide code from the compiler
+- at least, not from within a source repository.  Old code is already preserved
+in the source repository, so commented-out code only serves as a distraction.
+It's better to just delete commented-out code before committing.
 
 Learn More
 ----------
