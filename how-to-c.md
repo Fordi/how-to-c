@@ -27,6 +27,13 @@ translation at
 
 *Now on to the article...*
 
+Writing C
+---------
+
+> The first rule of C is don't write C if you can avoid it.
+
+<cite>- [Jan-Erik Rediger]</cite>
+
 Whether or not you write C is a broad topic, out of scope for this document.
 Often, C gives you, as the 1995 spiritual predecessor to this document informs
 you eponymously, [Enough Rope to Shoot Yourself In the Foot].
@@ -930,6 +937,7 @@ profiling, performance tracing, optional-but-useful warning levels, etc.
   [Matt]: mailto:matt@matt.sh
   [Adrián Arroyo Calle]: https://github.com/AdrianArroyoCalle
   [¿Cómo programar en C (en 2016)?]: https://adrianarroyocalle.github.io/blog/2016/01/10/como-programar-en-c-en-2016/
+  [Jan-Erik Rediger]: http://fnordig.de/
   [Enough Rope to Shoot Yourself In the Foot]: http://www.goodreads.com/book/show/103892.Enough_Rope_to_Shoot_Yourself_in_the_Foot
   [early 1970s]: https://www.bell-labs.com/usr/dmr/www/chist.html
   [gcc-specific extensions]: https://gcc.gnu.org/onlinedocs/gcc/C-Extensions.html
@@ -959,7 +967,6 @@ profiling, performance tracing, optional-but-useful warning levels, etc.
   [@mattsta]: https://twitter.com/mattsta
   [☁mattsta]: https://github.com/mattsta
   [Sos Sosowski]: https://twitter.com/Sosowski/status/685431663501926400
-  [@badboy\_]: https://twitter.com/badboy_
   [Remi Gacogne]: https://twitter.com/rgacogne/status/685390620723154944
   [Levi Pearson]: https://twitter.com/pineal_servo/status/685393454487056384
   [Christopher]: https://twitter.com/shrydar/status/685375992114757632
