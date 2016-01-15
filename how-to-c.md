@@ -34,12 +34,12 @@ Writing C
 
 <cite>- [Jan-Erik Rediger]</cite>
 
-Whether or not you write C is a broad topic, out of scope for this document.
-Often, C gives you, as the 1995 spiritual predecessor to this document informs
-you eponymously, [Enough Rope to Shoot Yourself In the Foot].
-
-Whatever your opinion on the topic, if you must write in C, you should follow
-modern rules.
+C provides a lot of power, speed, flexibility, and lifetime to code, however, C
+gives you, as the 1995 spiritual predecessor to this document informs you
+eponymously, [Enough Rope to Shoot Yourself In the Foot].  Whether or not you
+use C is a broad topic, largely out of scope for this document.  Whatever your
+opinion on the topic, if you must write your software using C, you should
+follow modern rules - whenever "modern" happens to be.
 
 C has been around since the [early 1970s]. People have "learned C" at various
 points during its evolution, but knowledge usually get stuck after learning, so
@@ -146,36 +146,43 @@ Writing code
 
 ### Types
 
-If you find yourself typing `char` or `int` or `short` or `long` or `unsigned`
-into new code, you're doing it wrong.
+If you find yourself typing `char` or `short` or `long` or `unsigned`
+into new code, you should question the purpose of the variable.
 
-For modern programs, you should `#include <stdint.h>` then use *standard* types.
+`int` is going to be the most "natural" integer type for the current platform -
+which may or may not be what you want.  If you want signed integers that are
+reasonably fast and are at least 16 bits, there's nothing wrong with using
+`int`.  `<stdint.h>`'s int_least16_t`, is usually the same type - they have the
+same requirements, at least - but is more verbose than it needs to be.
+
+To ensure consistency in non-storage data types for modern programs, you should
+`#include <stdint.h>` then use _standard_ types.
 
 The common standard types are:
 
 * `int8_t`, `int16_t`, `int32_t`, `int64_t` — signed integers
 * `uint8_t`, `uint16_t`, `uint32_t`, `uint64_t` — unsigned integers
-* `float` — standard 32-bit floating point
-* `double` - standard 64-bit floating point
-
-Notice we don't have `char` anymore. `char` is actually misnamed and misused
-in C.
+* `float` - 32-bit minimum floating point
+* `double` - 64-bit minimum floating point
 
 Developers routinely abuse `char` to mean "byte" even when they are doing
-unsigned byte manipulations. It's much cleaner to use `uint8_t` to mean single
-a unsigned-byte/octet-value and `uint8_t *` to mean
-sequence-of-unsigned-byte/octet-values.
+unsigned byte manipulations - however, while `char` is guaranteed to mean a
+byte, a byte inly guaranteed to be _at least_ 8 bits; it is not guaranteed to be
+_only_ 8 bits.  That said, POSIX requires that CHAR_BIT == 8.
 
-#### One Exception to never-`char`
+If you want bytes, use unsigned char. If you want octets, use uint8_t. If
+CHAR_BIT > 8, uint8_t won't exist, and your code won't compile (which is
+probably what you want).
 
-The *only* acceptable use of `char` in 2016 is if a pre-existing API requires
-`char` (e.g. `strncat`, printf'ing "%s", ...) or if you're initializing a
-read-only string (e.g. `const char *hello = "hello";`) because the C type of
-string literals (`"hello"`) is `char []`.
+If a pre-existing API requires `char` (e.g. `strncat`, printf'ing "%s", ...) or
+if you're initializing a read-only string (e.g. `const char *hello = "hello";`)
+because the C type of string literals (`"hello"`) is `char []`.
 
-ALSO: In C11 we have native unicode support, and the type of UTF-8 string
-literals is still `char *` even for multibyte sequences like `const char
-*abcgrr = u8"abc😬";`.
+In C11 we have native unicode support, and the type of UTF-8 string literals is
+still `char *` even for multibyte sequences like `const char *abcgrr =
+u8"abc😬";` - but keep in mind, strlen still reports the number of _bytes_ in a
+char[], not the number of codepoints.  If you need strong UTF-8 support for
+things like parsing and text processing, I recommend using [libutf8].
 
 #### Signedness
 
@@ -942,6 +949,7 @@ profiling, performance tracing, optional-but-useful warning levels, etc.
   [early 1970s]: https://www.bell-labs.com/usr/dmr/www/chist.html
   [gcc-specific extensions]: https://gcc.gnu.org/onlinedocs/gcc/C-Extensions.html
   [GCC's optimize options]: https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html
+  [libutf8]: http://www.haible.de/bruno/packages-libutf8.html
   [newer compiler versions]: https://twitter.com/oliviergay/status/685389448142565376
   [clang LTO]: http://llvm.org/docs/LinkTimeOptimization.html
   [guide]: http://llvm.org/docs/GoldPlugin.html
