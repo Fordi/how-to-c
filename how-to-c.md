@@ -326,9 +326,9 @@ but instead, because they are macros, you do:
     printf("Local number: %" PRIdPTR "\n\n", someIntPtr);
 
 Notice you put the `%` *inside* the format string literal within your code, but
-the type specifier is *outside* your format string literal because all adjacent
-strings get concatentated by the preprocessor into one final combined string
-literal.
+the type specifier is *outside* your format string literal.  This is because
+all adjacent strings get concatentated by the preprocessor into one final
+combined string literal.
 
 ### C99 allows variable declarations anywhere
 
