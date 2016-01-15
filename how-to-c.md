@@ -182,7 +182,7 @@ In C11 we have native unicode support, and the type of UTF-8 string literals is
 still `char *` even for multibyte sequences like `const char *abcgrr =
 u8"abc😬";` - but keep in mind, strlen still reports the number of _bytes_ in a
 char[], not the number of codepoints.  If you need strong UTF-8 support for
-things like parsing and text processing, I recommend using [libutf8].
+things like parsing and text processing, it's recommended to use [libutf8].
 
 #### Signedness
 
@@ -221,14 +221,17 @@ If we skip over the line of thinking where you are *deliberately* introducing
 difficult to reason about code by using two different sizes depending on
 platform, you still don't want to use `long` for system-dependent types.
 
-In these situations, you should use `intptr_t` — the integer type defined to be
-the word size of your current platform.
+In these situations, you should use `intptr_t`, defined in `<stddef.h> — the
+integer type defined to be the word size of your current platform.
 
 On 32-bit platforms, `intptr_t` is `int32_t`.
 
 On 64-bit platforms, `intptr_t` is `int64_t`.
 
-`intptr_t` also comes in a `uintptr_t` flavor.
+`intptr_t` also comes in a `uintptr_t` flavor.  It's possible that an
+implementation that cannot convert `void*` to an integer type without loss of
+information will not define `uintptr_t` - however, such implementations are rare,
+perhaps nonexistent.
 
 For holding pointer offsets, we have the aptly named `ptrdiff_t` which is the
 proper type for storing values of subtracted pointers.
