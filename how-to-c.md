@@ -255,9 +255,9 @@ precision.
 The most widely used system-dependent type is `size_t` and is provided
 by [stddef.h].
 
-`size_t` is basically as "an integer capable of holding the largest array
-index" which also means it's capable of holding the largest memory offset in
-your program.
+`size_t` is basically as "is the unsigned integral type of the result of the
+sizeof operator" which also means it's capable of holding the largest memory
+offset within an object.
 
 In practical use, `size_t` is the return type of `sizeof` operator.
 
