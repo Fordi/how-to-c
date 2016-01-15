@@ -265,12 +265,25 @@ In either case: `size_t` is *practically* defined to be the same as `uintptr_t`
 on all modern platforms, so on a 32-bit platform `size_t` is normally
 `uint32_t` and on a 64-bit platform `size_t` is normally `uint64_t`.
 
-There is also `ssize_t` which is a signed `size_t` used as the return value
-from library functions that return `-1` on error. (Note: `ssize_t` is POSIX and
-does not apply to Windows interfaces.)
+On modern desktops, `size_t` can represent any offset within your program -
+however, in legacy systems (e.g., older x86 systems that exposed addressing with
+"near" and "far" pointers), possible future systems that violate the assumption
+of pointer consistency, as well as some embedded systems, this is not always
+true.
+
+On POSIX, there is also `ssize_t` which is a signed `size_t` used as the return
+value from library functions that return `-1` on error.  On Windows systems,
+most POSIX functions that return `ssize_t` return `int` instead; you should do
+something like this in your program's common types header:
+
+    #ifndef _POSIX_VERSION
+    #   ifdef _WIN32
+            typedef int ssize_t
+    #   endif
+    #endif
 
 So, should you use `size_t` for arbitrary system-dependent sizes in your own
-function parameters? Technically, `size_t` is the return type of `sizeof`, so
+function parameters?  Technically, `size_t` is the return type of `sizeof`, so
 any functions accepting a size value representing a number of bytes is allowed
 to be a `size_t`.
 
