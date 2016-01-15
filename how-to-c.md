@@ -27,6 +27,15 @@ translation at
 
 *Now on to the article...*
 
+Caveat
+------
+
+This page of generic overview details isn't about cross-architecture
+intricacies of C, but best-practices with respect to the language.  External
+knowledge and experience is expected of you if you're to fully use any examples
+provided.  It almost goes without saying: You should know your target platform
+if you intend to develop for it.
+
 Writing C
 ---------
 
@@ -532,7 +541,7 @@ restrict the type of the parameter.
 
 So, do NOT do this:
 
-    void processAddBytesOverflow(uint8_t *bytes, uint32_t len) {
+    void processAddBytesOverflow(uint8_t *bytes, size_t len) {
         for (uint32_t i = 0; i < len; i++) {
             bytes[0] += bytes[i];
         }
@@ -540,8 +549,8 @@ So, do NOT do this:
 
 Do THIS instead:
 
-    void processAddBytesOverflow(void *input, uint32_t len) {
-        uint8_t *bytes = input;
+    void processAddBytesOverflow(void *input, size_t len) {
+        uint8_t *bytes = (uint8_t*) input;
 
         for (uint32_t i = 0; i < len; i++) {
             bytes[0] += bytes[i];
@@ -558,14 +567,10 @@ By declaring your input type as `void *` then re-assigning or re-casting to the
 actual type you want inside your function, you save the users of your function
 from having to think about abstractions *inside* your own library.
 
-Some readers have pointed out alignment problems with this example, but we are
-accessing single byte elements of the input, so everything is fine. If instead
-we were casting the input to wider types, we would need to watch out for
-alignment issues. For a different write up dealing with cross-platform
-alignment issues, see [Unaligned Memory Access]. (reminder: this page of
-generic overview details isn't about cross-architecture intricacies of C, so
-external knowledge and experience is expected to fully use any examples
-provided.)
+Some readers have pointed out alignment problems with analogues to this example:
+while accessing a sequence of bytes, as we do here, is always safe, accessing
+wider types might not be; for a different write up dealing with cross-platform
+alignment issues, see [Unaligned Memory Access].
 
 ### Return Parameter Types
 
