@@ -224,9 +224,9 @@ platform, you still don't want to use `long` for system-dependent types.
 In these situations, you should use `intptr_t`, defined in `<stddef.h> — the
 integer type defined to be the word size of your current platform.
 
-On 32-bit platforms, `intptr_t` is `int32_t`.
+On 32-bit platforms, `intptr_t` is normally `int32_t`.
 
-On 64-bit platforms, `intptr_t` is `int64_t`.
+On 64-bit platforms, `intptr_t` is normally `int64_t`.
 
 `intptr_t` also comes in a `uintptr_t` flavor.  It's possible that an
 implementation that cannot convert `void*` to an integer type without loss of
